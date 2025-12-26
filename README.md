@@ -6,4 +6,4 @@ Para ejecutar el programa seguir los siguientes pasos :
 
 3) Ir a la carpeta docker, abrir CMD y poner: docker-compose -f docker-compose-dev.yml up
 
-4) En algún navegador web, poner como URL lo siguiente: localhost:100 (esto si no se modifico el número de puerto en el .env)
+4) En algún navegador web, poner como URL lo siguiente: localhost:500 (esto si no se modifico el número de puerto en el .env)
