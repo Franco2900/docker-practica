@@ -1,0 +1,40 @@
+services:      # Acá se describe los contenedores que usaremos. Cada contenedor se considera un servicio.
+  mysql:
+    container_name: ContenedorMySQL    # Nombre del contenedor
+    image: mysql:latest                # Imagen a descargar y usar
+    environment:                       # Variables de entorno
+      MYSQL_ROOT_PASSWORD: root        # Contraseña del usuario root
+      MYSQL_DATABASE: hr4              # Base de datos a la que conectarse
+    volumes:                           
+      - "../database/hr4.sql:/docker-entrypoint-initdb.d/init.sql" # Indico que script .sql usar en una ubicación específica de Linux para que se ejecute el script .sql al crear el contenedor MySQL
+      - volumenDockerDesarrollo:/var/lib/mysql                     # Monta el volumen para persistir los datos en una ubicación específica de Linux
+    networks:                          
+      - redDockerDesarrollo             # Red interna de Docker a la que conectarse
+  
+  app:
+    container_name: ContenedorSitioWeb # Nombre del contenedor
+    build:                             # En lugar de descargar la imagen, la construye
+      context: ../                     # Carpeta del proyecto. También indica que todos los comandos de la imagen Docker van a trabajar desde esta ubicación. No se puede usar archivos fuera de esta carpeta
+      dockerfile: docker/Dockerfile.dev # Le indicamos que archivo Dockerfile (archivo de imagen) usar
+    ports:                             
+      - "500:500"                      # Expone el puerto interno 500 del contenedor al puerto externo 500 del host
+    volumes:                           # PRINCIPAL DIFERENCIA CON EL DOCKER DE PRODUCCIÓN
+      - ../:/app                       # Volumen del código. Permite el Hot reload (que los cambios en el codigo de la maquina host se vean reflejados en el contenedor)
+      - app_node_modules:/app/node_modules # Volumen nombrado que protege el contenido de node_modules dentro del contenedor frente al volumen anterior, evitando que el bind‑mount del host lo oculte.
+    environment: 
+      - CHOKIDAR_USEPOLLING=true       # Obliga a Chokidar a comprobar periódicamente los archivos (polling). Se usa cuando los eventos no llegan dentro de contenedores, VM o sistemas de archivos montados
+    networks:                          
+      - redDockerDesarrollo            # Red interna de Docker a la que conectarse
+
+
+networks:    # Acá se describen las redes internas que usaremos
+  redDockerDesarrollo:                         
+    name: redDockerDesarrollo          # Nombre de la red interna (si no se pone, el nombre es el nombre del proyecto más el de la red)
+    driver: bridge                     # Driver por defecto
+
+
+volumes:   # Acá se describen los volumenes a usar
+  volumenDockerDesarrollo:
+    name: volumenDockerDesarrollo     # Nombre del volumen (si no se pone, el nombre es el nombre del proyecto más el del volumen)
+    driver: local                     # Driver por defecto. Crea y asigna el volumen en el sistema de archivos del host (usualmente en una ubicación gestionada por Docker)
+  app_node_modules:

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de prueba</title>
+    
+    <link rel="stylesheet" type="text/css" href="/css/layout.css">
+    <!-- Bootstrap CSS -->
+    <link href="/bootstrapCSS/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CSS -->
+    <link href="/bootstrapICONS/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <h1>Mi Sitio Web</h1>
+    </header>
+
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/contacto">Contacto</a>
+
+        <% if (!usuario.nombre) { %>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        <% } else { %>
+            <a href="/logout">Cerrar sesion</a>
+        <% } %>
+    </nav>
+    
+    <div id="plantillaSecundaria">
+        <%- include(body) %> <!-- Plantilla secundaria acá -->
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Mi Sitio Web</p>
+    </footer>
+
+</body>
+
+</html>
